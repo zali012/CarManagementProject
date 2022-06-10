@@ -1,0 +1,219 @@
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<script>
+$(document).ready(function(){
+	
+	var isEdit = false;
+	var edit_id;
+		$.ajax({
+        url: "http://localhost:8080/getAll"
+    }).then(function(data) {
+		
+
+                        
+		 $.each(data, function(i, item) {
+         var row = '<tr>' +
+            '<td>'+data[i].type+'</td>' +
+            '<td>'+data[i].model+'</td>' +
+            '<td>'+data[i].color+'</td>' +
+            '<td>'+data[i].speed+'</td>' +
+           '<td>' + '<a title="Edit" class="edit" id='+data[i].id+'> <i class="glyphicon glyphicon-edit text-primary"></i> </a><a title="Delete" class="delete" id='+data[i].id+'> <i class="glyphicon glyphicon-trash text-danger"></i> </a>'; + '</td>' +
+        '</tr>';
+    	$("table").append(row);		
+		//$("table tbody tr").eq(index + 1).find(".add, .edit").toggle();
+        //$('[data-toggle="tooltip"]').tooltip();
+         });
+    });
+    
+    
+  $("#btn-save").click(function(){
+    var type = $("#car-type").val();
+    var model = $("#car-model").val();
+    var color = $("#car-color").val();
+    var speed = $("#car-speed").val();
+    
+   
+	var jsonStr = JSON.stringify({"type": type, "model": model, "color": color, "speed":speed });
+	
+	if(isEdit){
+			 $.ajax({
+   				 url: "http://localhost:8080/replace/"+edit_id,
+    			type: "PUT",
+    			data: jsonStr,
+    			dataType:'json',
+    			contentType: "application/json; charset=utf-8",
+    			success: function (response) {
+        			console.log(response);
+        			isEdit = false;
+        			location.reload();
+    			},
+    			error: function(error){
+        			console.log("Something went wrong", error);
+    			}
+    		});
+    		
+	}else{
+	 $.ajax({
+    url: "http://localhost:8080/create",
+    type: "POST",
+    data: jsonStr,
+    dataType:'json',
+    contentType: "application/json; charset=utf-8",
+    success: function (response) {
+        console.log(response);
+        location.reload();
+    },
+    error: function(error){
+        console.log("Something went wrong", error);
+    }
+});
+}
+
+  });
+  
+    $(document).on("click", ".edit", function(){
+		var type = $(this).parents("tr").find("td:eq(0)").html();
+    	var model = $(this).parents("tr").find("td:eq(1)").html();
+    	var color = $(this).parents("tr").find("td:eq(2)").html();
+    	var speed = $(this).parents("tr").find("td:eq(3)").html();
+
+    	isEdit = true;
+    	edit_id = $(this).attr('id');
+    	
+    	$("#car-type").val(type);
+    	$("#car-model").val(model);
+    	$("#car-color").val(color);
+    	$("#car-speed").val(speed);
+    	
+	});
+	
+  	$(document).on("click", ".delete", function(){
+	var carId = $(this).attr('id');
+     $.ajax({
+        type : 'DELETE',
+        contentType: "application/json",
+        url : "http://localhost:8080/remove/"+carId,
+        dataType : 'json',
+        success: function (result) {       
+               console.log(result);
+               location.reload();        
+        },
+        error: function (e) {
+            console.log(e);
+        }
+   });
+	});
+});
+</script>
+
+
+<div class="container">
+	<div class="row">
+	    
+<link href="http://fontawesome.io/assets/font-awesome/css/font-awesome.css" rel="stylesheet" media="screen">
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" type="text/css" rel="stylesheet">
+
+
+
+<!-- FORM  -->	    
+	   <div class="col-md-12">
+	       
+	    <form class="form-horizontal" id="form-edit-cars">
+<fieldset>
+
+<!-- Form Name -->
+<legend>Car</legend>
+
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="client-name">Car Type</label>  
+  <div class="col-md-4">
+  <input id="car-type" name="car-type" type="text" placeholder="Car Type" class="form-control input-md">
+  </div>
+</div>
+
+<!-- Prepended text-->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="client-email">Car Model</label>
+  <div class="col-md-4">
+    <div class="input-group">
+  <input id="car-model" name="car-model" type="text" placeholder="Car Model" class="form-control input-md">
+    </div>
+  </div>
+</div>
+
+
+<div class="form-group">
+  <label class="col-md-4 control-label" for="client-email">Car Color</label>
+  <div class="col-md-4">
+    <div class="input-group">
+  <input id="car-color" name="car-color" type="text" placeholder="Car Color" class="form-control input-md">
+    </div>
+  </div>
+</div>
+
+
+<div class="form-group">
+  <label class="col-md-4 control-label" for="client-email">Car Speed</label>
+  <div class="col-md-4">
+    <div class="input-group">
+  <input id="car-speed" name="car-speed" type="text" placeholder="Car Speed" class="form-control input-md">
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- Button -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="btn-save"></label>
+  <div class="col-md-4">
+    <button id="btn-save" name="btn-save" class="btn btn-success">Save</button>
+  </div>
+</div>
+
+</fieldset>
+</form>
+
+
+	   </div> 
+	    
+
+
+
+<!-- LIST -->
+<div class=col-md-12>
+    
+    <form id="form-list-client">
+            <legend>List of Cars</legend>
+    
+
+    <table class="table table-bordered table-condensed table-hover">
+        <thead>
+            <tr>
+                <th>Car Type</th>
+                <th>Car Model</th>
+                <th>Car Color</th>
+                <th>Car Speed</th>
+
+                <th>Actions</th>
+            </tr>
+                
+        </thead>
+        <tbody id="form-list-car-body">
+        </tbody>
+    </table>
+    </form>
+
+    
+</div>
+
+
+<br> 
+	    
+	    
+	</div>
+</div>
