@@ -33,6 +33,4 @@ You must plan the approach you will take to complete this project using project 
 
 ![Car_ERD](https://user-images.githubusercontent.com/101716153/173100717-838e1437-171b-423e-ac0e-617904337ee3.png)
 
-![Risk_Assessment](https://user-images.githubusercontent.com/101716153/173100761-3d2d1385-13a1-4823-be73-d0e23266f84f.png)
-
-
+![Risk_Assessment](https://user-images.githubusercontent.com/101716153/173102759-e777e414-b53a-42a8-b2cf-9209271a8a6f.png)
